@@ -16,7 +16,7 @@ services:
   router01:
     build: .
     container_name: 2l-mongo-router-01
-    command: mongos --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
+    command: mongos --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
     ports:
       - 27117:27017
     restart: always
@@ -48,6 +48,9 @@ services:
     links:
       - shard01-a
       - shard02-a
+      - shard03-a
+      - configsvr02
+      - configsvr03
     networks:
       - 2l-mongo
     environment:
@@ -66,8 +69,24 @@ services:
     ports:
       - 27120:27017
     restart: always
-    links:
-      - configsvr01
+    networks:
+      - 2l-mongo
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_2L_USER: ${MONGO_2L_USER}
+      MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
+
+  configsvr03:
+    build: .
+    container_name: 2l-mongo-config-03
+    command: mongod --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
+    volumes:
+      - mongo_configsvr03_db:/data/db
+      - mongo_configsvr03_cfg:/data/configdb
+    ports:
+      - 27121:27017
+    restart: always
     networks:
       - 2l-mongo
     environment:
@@ -192,6 +211,64 @@ services:
       MONGO_2L_USER: ${MONGO_2L_USER}
       MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
 
+  shard03-a:
+    build: .
+    container_name: 2l-shard-03-node-a
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    volumes:
+      - ./scripts:/scripts
+      - mongo_shard_03_a_db:/data/db
+      - mongo_shard_03_a_cfg:/data/configdb
+    ports:
+      - 27128:27017
+    restart: always
+    links:
+      - shard03-b
+      - shard03-c
+    networks:
+      - 2l-mongo
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_2L_USER: ${MONGO_2L_USER}
+      MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
+
+  shard03-b:
+    build: .
+    container_name: 2l-shard-03-node-b
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    volumes:
+      - mongo_shard_03_b_db:/data/db
+      - mongo_shard_03_b_cfg:/data/configdb
+    ports:
+      - 27129:27017
+    restart: always
+    networks:
+      - 2l-mongo
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_2L_USER: ${MONGO_2L_USER}
+      MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
+
+  shard03-c:
+    build: .
+    container_name: 2l-shard-03-node-c
+    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    volumes:
+      - mongo_shard_03_c_db:/data/db
+      - mongo_shard_03_c_cfg:/data/configdb
+    ports:
+      - 27130:27017
+    restart: always
+    networks:
+      - 2l-mongo
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_2L_USER: ${MONGO_2L_USER}
+      MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
+
 volumes:
   l2l-redis-data-volume:
     driver: local
@@ -204,6 +281,9 @@ volumes:
 
   mongo_configsvr02_db:
   mongo_configsvr02_cfg:
+
+  mongo_configsvr03_db:
+  mongo_configsvr03_cfg:
 
   mongo_shard_01_a_db:
   mongo_shard_01_a_cfg:
@@ -222,6 +302,15 @@ volumes:
 
   mongo_shard_02_c_db:
   mongo_shard_02_c_cfg:
+
+  mongo_shard_03_a_db:
+  mongo_shard_03_a_cfg:
+
+  mongo_shard_03_b_db:
+  mongo_shard_03_b_cfg:
+
+  mongo_shard_03_c_db:
+  mongo_shard_03_c_cfg:
 
 networks:
   l2l:
