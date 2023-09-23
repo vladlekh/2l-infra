@@ -34,6 +34,27 @@ services:
       MONGO_2L_USER: ${MONGO_2L_USER}
       MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
 
+  router02:
+    build: .
+    container_name: 2l-mongo-router-02
+    command: mongos --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
+    ports:
+      - 27118:27017
+    restart: always
+    volumes:
+      - ./scripts:/scripts
+      - mongo_router02_db:/data/db
+      - mongo_router02_cfg:/data/configdb
+    links:
+      - router01
+    networks:
+      - 2l-mongo
+    environment:
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_2L_USER: ${MONGO_2L_USER}
+      MONGO_2L_PASSWORD: ${MONGO_2L_PASSWORD}
+
   configsvr01:
     build: .
     container_name: 2l-mongo-config-01
@@ -275,6 +296,9 @@ volumes:
 
   mongo_router01_db:
   mongo_router01_cfg:
+
+  mongo_router02_db:
+  mongo_router02_cfg:
 
   mongo_configsvr01_db:
   mongo_configsvr01_cfg:
