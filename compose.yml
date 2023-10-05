@@ -1,18 +1,4 @@
 services:
-  redis:
-    image: redis/redis-stack:6.2.6-v9
-    container_name: l2l-redis
-    restart: always
-    volumes:
-      - l2l-redis-data-volume:/data
-    environment:
-      REDIS_ARGS: "--requirepass ${REDIS_PASSWORD}"
-    ports:
-      - 6379:6379
-      - 8001:8001
-    networks:
-      - l2l
-
   router01:
     build: .
     container_name: 2l-mongo-router-01
