@@ -2,7 +2,7 @@ services:
   router01:
     build: .
     container_name: 2l-mongo-router-01
-    command: mongos --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
+    command: mongos --quiet --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
     ports:
       - 27117:27017
     restart: always
@@ -23,7 +23,7 @@ services:
   router02:
     build: .
     container_name: 2l-mongo-router-02
-    command: mongos --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
+    command: mongos --quiet --port 27017 --configdb rs-config-server/configsvr01:27017,configsvr02:27017,configsvr03:27017 --bind_ip_all --keyFile /data/mongodb-keyfile
     ports:
       - 27118:27017
     restart: always
@@ -44,7 +44,7 @@ services:
   configsvr01:
     build: .
     container_name: 2l-mongo-config-01
-    command: mongod --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
     volumes:
       - ./scripts:/scripts
       - mongo_configsvr01_db:/data/db
@@ -69,7 +69,7 @@ services:
   configsvr02:
     build: .
     container_name: 2l-mongo-config-02
-    command: mongod --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_configsvr02_db:/data/db
       - mongo_configsvr02_cfg:/data/configdb
@@ -87,7 +87,7 @@ services:
   configsvr03:
     build: .
     container_name: 2l-mongo-config-03
-    command: mongod --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --configsvr --replSet rs-config-server --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_configsvr03_db:/data/db
       - mongo_configsvr03_cfg:/data/configdb
@@ -105,7 +105,7 @@ services:
   shard01-a:
     build: .
     container_name: 2l-shard-01-node-a
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
     volumes:
       - ./scripts:/scripts
       - mongo_shard_01_a_db:/data/db
@@ -127,7 +127,7 @@ services:
   shard01-b:
     build: .
     container_name: 2l-shard-01-node-b
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_01_b_db:/data/db
       - mongo_shard_01_b_cfg:/data/configdb
@@ -145,7 +145,7 @@ services:
   shard01-c:
     build: .
     container_name: 2l-shard-01-node-c
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-01 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_01_c_db:/data/db
       - mongo_shard_01_c_cfg:/data/configdb
@@ -163,7 +163,7 @@ services:
   shard02-a:
     build: .
     container_name: 2l-shard-02-node-a
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
     volumes:
       - ./scripts:/scripts
       - mongo_shard_02_a_db:/data/db
@@ -185,7 +185,7 @@ services:
   shard02-b:
     build: .
     container_name: 2l-shard-02-node-b
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_02_b_db:/data/db
       - mongo_shard_02_b_cfg:/data/configdb
@@ -203,7 +203,7 @@ services:
   shard02-c:
     build: .
     container_name: 2l-shard-02-node-c
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-02 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_02_c_db:/data/db
       - mongo_shard_02_c_cfg:/data/configdb
@@ -221,7 +221,7 @@ services:
   shard03-a:
     build: .
     container_name: 2l-shard-03-node-a
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
     volumes:
       - ./scripts:/scripts
       - mongo_shard_03_a_db:/data/db
@@ -243,7 +243,7 @@ services:
   shard03-b:
     build: .
     container_name: 2l-shard-03-node-b
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_03_b_db:/data/db
       - mongo_shard_03_b_cfg:/data/configdb
@@ -261,7 +261,7 @@ services:
   shard03-c:
     build: .
     container_name: 2l-shard-03-node-c
-    command: mongod --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
+    command: mongod --quiet --port 27017 --shardsvr --replSet rs-shard-03 --keyFile /data/mongodb-keyfile
     volumes:
       - mongo_shard_03_c_db:/data/db
       - mongo_shard_03_c_cfg:/data/configdb
